@@ -1,51 +1,55 @@
 package main
 
 import (
-	"io"
+	"fmt"
+	"github.com/TaigaMikami/negirai/sound"
+	"github.com/urfave/cli/v2"
 	"log"
-
-	"github.com/hajimehoshi/oto"
-	"github.com/hajimehoshi/go-mp3"
-
-	_ "github.com/TaigaMikami/negirai/statik"
-	"github.com/rakyll/statik/fs"
+	"os"
 )
 
-func run() error {
-	statikFs, err := fs.New()
-	if err != nil {
-		return err
-	}
-
-	f, err := statikFs.Open("/yarujanaika.mp3")
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	d, err := mp3.NewDecoder(f)
-	if err != nil {
-		return err
-	}
-
-	c, err := oto.NewContext(d.SampleRate(), 2, 2, 8192)
-	if err != nil {
-		return err
-	}
-	defer c.Close()
-
-	p := c.NewPlayer()
-	defer p.Close()
-
-	if _, err := io.Copy(p, d); err != nil {
-		return err
-	}
-
-	return nil
-}
+//func main() {
+//	if err := sound.Play(); err != nil {
+//		log.Fatal(err)
+//	}
+//}
 
 func main() {
-	if err := run(); err != nil {
+	app := &cli.App{
+		Name: "negirai",
+		Authors: []*cli.Author{
+			&cli.Author{
+				Name: "Taiga Mikami",
+			},
+		},
+		Usage: "This command says thank you for your hard work.",
+		Commands: []*cli.Command{
+			{
+				Name:    "appreciate",
+				Aliases: []string{"a"},
+				Usage:   "Thank you for your hard work by playing the audio",
+				Action: func(c *cli.Context) error {
+					err := sound.Play()
+					if err != nil {
+						return err
+					}
+					return nil
+				},
+			},
+			{
+				Name:    "pre-commit",
+				Aliases: []string{"p"},
+				Usage:   "Add pre-commit script for your git project",
+				Action: func(c *cli.Context) error {
+					fmt.Println("hoge")
+					return nil
+				},
+			},
+		},
+	}
+
+	err := app.Run(os.Args)
+	if err != nil {
 		log.Fatal(err)
 	}
 }
