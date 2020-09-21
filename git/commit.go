@@ -26,6 +26,6 @@ func preCommitContent(file *os.File) {
 	fmt.Fprintln(file, "commit_cnt=$(git log --after=\"`date '+%Y-%m-%d'` 0:0\" --oneline --branches * | wc -l)")
 	fmt.Fprintln(file, "echo ${commit_cnt}")
 	fmt.Fprintln(file, "if [ $commit_cnt -ge 0 ]; then")
-	fmt.Fprintln(file, "go run main.go appreciate")
+	fmt.Fprintln(file, "negirai appreciate")
 	fmt.Fprintln(file, "fi")
 }
