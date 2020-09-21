@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"github.com/TaigaMikami/negirai/git"
 	"github.com/TaigaMikami/negirai/sound"
 	"github.com/urfave/cli/v2"
 	"log"
@@ -41,7 +41,10 @@ func main() {
 				Aliases: []string{"p"},
 				Usage:   "Add pre-commit script for your git project",
 				Action: func(c *cli.Context) error {
-					fmt.Println("hoge")
+					err := git.MakePreCommitFile()
+					if err != nil {
+						return err
+					}
 					return nil
 				},
 			},
