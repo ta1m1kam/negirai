@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io"
 	"log"
 
@@ -12,21 +11,41 @@ import (
 	"github.com/rakyll/statik/fs"
 )
 
-func main() {
+func run() error {
 	statikFs, err := fs.New()
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	f, err := statikFs.Open("/yarujanaika.mp3")
+	if err != nil {
+		return err
+	}
 	defer f.Close()
+
 	d, err := mp3.NewDecoder(f)
+	if err != nil {
+		return err
+	}
+
 	c, err := oto.NewContext(d.SampleRate(), 2, 2, 8192)
+	if err != nil {
+		return err
+	}
 	defer c.Close()
+
 	p := c.NewPlayer()
 	defer p.Close()
 
 	if _, err := io.Copy(p, d); err != nil {
-		fmt.Println(err)
+		return err
+	}
+
+	return nil
+}
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
 	}
 }
